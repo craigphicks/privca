@@ -6,3 +6,6 @@ With walk-through of example application to lighttpd 1.4.45 as server, Firefox v
 ## source code `privca.sh`
 
 {% gist c9dae527b30441730f62c9c9e9dab5a1 %}
+
+<script src="https://gist.github.com/craigphicks/c9dae527b30441730f62c9c9e9dab5a1.js"></script>
+
