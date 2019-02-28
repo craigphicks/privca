@@ -1,5 +1,5 @@
 theme: jekyll-theme-slate
-name: privca - Minimalist private CA and server/client cert tool
-description: Enable two-way authentication within a closed group, e.g. lighttpd 1.4.45 as server, Firefox v65.0 browser as client.
+title: privca - Minimalist private CA and server/client cert tool
+description: Enable two-way authentication in a closed network, specific example with lighttpd 1.4.45 as server, Firefox v65.0 browser as client.
 # instead of kramdown, for the sake of callapsing
 markdown: CommonMarkGhPages
