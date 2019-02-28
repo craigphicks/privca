@@ -9,9 +9,9 @@ title: index page
 Background: What is "two-way authentication" and "private CA" ?
 -------------
 
-Skip this section if you already know the terms "two-way authentication" and "private CA".
+<details>
+<summary>Skip this section if you already know the terms "two-way authentication" and "private CA".</summary>
 
-{% collapsible %}
 
 One-way authentication is the most familiar model: that's the system of provable trust that allows the green lock followed by *https://...* to be displayed in the browser address bar.  The magic of [public cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography) makes possible the system whereby a client requests a URL, and then receives authentication data from a server saying "I am the one allowed to serve this URL", and it is believable be\
 cause a CA (certificate authority) will vouch for it.  Of course the response URL had better match the requested URL -  otherwise you may be p*wned!
@@ -23,6 +23,5 @@ Last but not least, two-way authentication is for situations where the servers a
 
 A private CA is also created for use on a secure, closed membership system.  A private CA is not globally known.  A private CA and two-way authentication are well suited to each other because they handle the same niche use case.
 
-{% endcollapsible %}
-
+</details>
 
