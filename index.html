@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="./img/favicon.ico">
-        <title>My Docs</title>
+        <title>Two way SSL authentication in a private network - example is shown using Lighttpd and Firefox</title>
         <link href="./css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="./css/font-awesome-4.5.0.css" rel="stylesheet">
         <link href="./css/base.css" rel="stylesheet">
@@ -31,7 +31,7 @@
 
         <!-- Collapsed navigation -->
         <div class="navbar-header">
-            <a class="navbar-brand" href=".">My Docs</a>
+            <a class="navbar-brand" href=".">Two way SSL authentication in a private network - example is shown using Lighttpd and Firefox</a>
         </div>
 
         <!-- Expanded navigation -->
@@ -51,31 +51,445 @@
         <div class="container">
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#welcome-to-mkdocs">Welcome to MkDocs</a></li>
-            <li><a href="#commands">Commands</a></li>
-            <li><a href="#project-layout">Project layout</a></li>
+        <li class="main active"><a href="#summary">Summary</a></li>
+        <li class="main "><a href="#background-what-are-two-way-authentication-and-private-ca">Background: What are "two-way authentication" and "private CA"?</a></li>
+        <li class="main "><a href="#lighttpd-documentation-on-two-way-security">lighttpd documentation on two-way security</a></li>
+        <li class="main "><a href="#step-1">step 1</a></li>
+        <li class="main "><a href="#pause-for-birds-eye-view">Pause for Bird's Eye View</a></li>
+        <li class="main "><a href="#step-6">step 6</a></li>
+        <li class="main "><a href="#step-7">step 7</a></li>
+        <li class="main "><a href="#step-8">step 8</a></li>
+        <li class="main "><a href="#step-9">step 9</a></li>
+        <li class="main "><a href="#step-10">step 10</a></li>
+        <li class="main "><a href="#step-11">step 11</a></li>
+        <li class="main "><a href="#step-12">step 12</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="welcome-to-mkdocs">Welcome to MkDocs</h1>
-<p>For full documentation visit <a href="http://mkdocs.org">mkdocs.org</a>.</p>
+<!-- site_name: Two way SSL authentication in a private network - example is shown using Lighttpd and Firefox -->
+
 <p><details><summary></p>
-<h2 id="commands">Commands</h2>
+<h2 id="summary">Summary</h2>
 <p></summary></p>
-<ul>
-<li><code>mkdocs new [dir-name]</code> - Create a new project.</li>
-<li><code>mkdocs serve</code> - Start the live-reloading docs server.</li>
-<li><code>mkdocs build</code> - Build the documentation site.</li>
-<li><code>mkdocs help</code> - Print this help message.
-</details></li>
-</ul>
-<h2 id="project-layout">Project layout</h2>
-<pre><code>mkdocs.yml    # The configuration file.
-docs/
-    index.md  # The documentation homepage.
-    ...       # Other markdown pages, images and other files.
-</code></pre></div>
+<p>This document decribes a simple step-by-step configuration for configuring Client Side Authentification in the case of <em>lighttpd v1.4.45</em> as server, and Firebox Browser v65.0 as client.
+Client Side Authentification is part of 
+</details></p>
+<!-- ----------------------------------------------- -->
+
+<p><details><summary></p>
+<h2 id="background-what-are-two-way-authentication-and-private-ca">Background: What are "two-way authentication" and "private CA"?</h2>
+<p></summary></p>
+<p>One-way authentication is the most familiar model: that's the system of provable trust that allows the green lock followed by <em>https://...</em> to be displayed in the browser address bar.  The magic of <a href="https://en.wikipedia.org/wiki/Public-key_cryptography">public cryptography</a> makes possible the system whereby a client requests a URL, and then receives authentication data from a server saying "I am the one allowed to serve this URL", and it is believable because a CA (certificate authority) will vouch for it.  Of course the response URL had better match the requested URL -  otherwise you may be p*wned!</p>
+<p>Two way authentication is an additional step where the server also receives authentication data from the client.  However, there are some subtle differences.  Firstly, instead of a URL it is an ID which is being verified.  Secondly,  the server does not request the ID first - the client initiates contact and then the server verifies that the client ID is on a list of allowed clients.  Nevertheless, the core algorithms behind authenticating the ID and authenticating the URL are the same, and most (but not all) of the procedural glue is the same.  This additional step is also called "client side verification"</p>
+<p>Last but not least, two-way authentication is for situations where the servers and clients which will be communicating with each other are known in advance at the time the certificates are issued.  Therefore two-way authentication is not applicable to general public browsing.  Two-way authentication is a niche use case for secure, closed membership systems.</p>
+<p>A private CA is also created for use on a secure, closed membership system.  A private CA is not globally known.  A private CA and two-way authentication are well suited to each other because they handle the same niche use case.</p>
+<p></details></p>
+<!-- ----------------------------------------------- -->
+
+<p><details><summary></p>
+<h2 id="lighttpd-documentation-on-two-way-security"><em>lighttpd</em> documentation on two-way security</h2>
+<p></summary></p>
+<p>The lighttpd <a href="https://redmine.lighttpd.net/projects/lighttpd/wiki/Docs_SSL">SSL documentation</a>
+describes the relevant parameters for one-way authentication:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ssl.engine</td>
+<td>enable/disable ssl engine</td>
+</tr>
+<tr>
+<td>ssl.pemfile</td>
+<td>path to the PEM file for SSL support (must contain both certificate and private key)</td>
+</tr>
+<tr>
+<td>ssl.ca-file</td>
+<td>path to the CA file for support of chained certificates</td>
+</tr>
+</tbody>
+</table>
+<p>The additional parameters for two-way authentication, i.e. "Client Side Verification", are also described:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ssl.verifyclient.activate</td>
+<td>enable/disable client verification</td>
+</tr>
+<tr>
+<td>ssl.verifyclient.enforce</td>
+<td>enable/disable enforcing client verification</td>
+</tr>
+<tr>
+<td>ssl.verifyclient.depth</td>
+<td>certificate depth for client verification</td>
+</tr>
+<tr>
+<td>ssl.verifyclient.username</td>
+<td>client certificate entity to export as env:REMOTE_USER (eg. SSL_CLIENT_S_DN_emailAddress, SSL_CLIENT_S_DN_UID, etc.)</td>
+</tr>
+</tbody>
+</table>
+<p>Searching with <code>site:redmine.lighttpd.net SSL_CLIENT_S_DN_C</code> shows that</p>
+<pre><code>ssl.verifyclient.username = SSL_CLIENT_S_DN_CN
+</code></pre>
+<p>is a valid value, and will make  the "Common Name" of the client certificate available.</p>
+<p>We want to use this "Common Name" for authentification in the <em>lighttpd</em> server itself, not act upon the value in the application.  The <a href="https://redmine.lighttpd.net/projects/lighttpd/wiki/Docs_ModAuth">Mod_Auth documentation</a> describes how to do this:</p>
+<pre><code>auth.require = ( &quot;&quot; =&gt;
+                 (
+                   &quot;method&quot;  =&gt; &quot;extern&quot;,
+                   &quot;realm&quot;   =&gt; &quot;certificate&quot;,
+                   &quot;require&quot; =&gt; &quot;user=agent007|user=agent008&quot; 
+                 )
+               )
+</code></pre>
+
+<p>Putting all this information together will be covered in
+section <a href="#fullexample">iwozere</a></p>
+<p></details></p>
+<!-- ----------------------------------------------- -->
+
+<p><details><summary></p>
+<h2 id="full-example-with-lighttpd-v1445-and-firefox-v650"><a name="fullexample"></a> Full example with <em>lighttpd v1.4.45</em> and <em>Firefox v65.0</em></h2>
+<p></summary></p>
+<p><details><summary></p>
+<h3 id="step-1">step 1</h3>
+<p></summary></p>
+<p>Create one private root and two leaf certificates with the following profiles:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>CA cert</th>
+<th>Server cert</th>
+<th>Client cert</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>CA</td>
+<td>Leaf</td>
+<td>Leaf</td>
+</tr>
+<tr>
+<td>CN (common name)</td>
+<td>Root1</td>
+<td>Server1</td>
+<td>Client1</td>
+</tr>
+<tr>
+<td>subjectAltName</td>
+<td>N/A</td>
+<td>DNS:pihole.home.lan,<br>DNS:pihole,IP:192.168.1.20</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Key filename</td>
+<td>Root1.key</td>
+<td>Server1.key</td>
+<td>Client1.key</td>
+</tr>
+<tr>
+<td>Cert filname</td>
+<td>Root1.crt</td>
+<td>Server1.crt</td>
+<td>Client1.crt</td>
+</tr>
+<tr>
+<td>Key+Cert filename</td>
+<td>N/A</td>
+<td>Server1.key-crt.pem</td>
+<td>Client1.p12</td>
+</tr>
+</tbody>
+</table>
+<p><em>Note:</em> The field <strong>DNS:pihole.home.lan,DNS:pihole,IP:192.168.1.20</strong>
+is a single string with no spaces. It was broken into two lines only to fit in the table.</p>
+<p>There are a number of programs capable for creating such files, but for convenience and brevity
+a humble minimalist batch file calling making <em>openssl</em> calls is provided with this document.
+It is described in the section <a href=""><em>privca</em> Cert Creation Tool</a>.
+</details></p>
+<p><details><summary></p>
+<h3 id="pause-for-birds-eye-view">Pause for Bird's Eye View</h3>
+<p></summary></p>
+<p>We pause for a birds eye view of what files go where, and what role they
+play in the web of Authentication.</p>
+<p>The key+cert files are composed as follows:</p>
+<table>
+<thead>
+<tr>
+<th>&nbsp;</th>
+<th>Key Part source file</th>
+<th>Cert Part source file</th>
+<th>Combined File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Server</td>
+<td>Server1.key</td>
+<td>Server1.crt</td>
+<td>Server1.key-crt.pem</td>
+</tr>
+<tr>
+<td>Client</td>
+<td>Client1.key</td>
+<td>Client1.crt</td>
+<td>Client1.p12</td>
+</tr>
+</tbody>
+</table>
+<p>The next table shows to where the files will eventually be exported and the role they will play:</p>
+<table>
+<thead>
+<tr>
+<th>Authenticator</th>
+<th>Authenticatee</th>
+<th>Server side file</th>
+<th>Client side file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Client</td>
+<td>Server</td>
+<td>Server1.key-crt.pem</td>
+<td>Root1.crt</td>
+</tr>
+<tr>
+<td>Sever</td>
+<td>Client</td>
+<td>Root1.crt</td>
+<td>Client1.p12</td>
+</tr>
+</tbody>
+</table>
+<p></details></p>
+<!-- ----------------------------------------------- -->
+
+<p><details><summary></p>
+<h3 id="step-6">step 6</h3>
+<p></summary>
+From Firefox -</p>
+<p>Click through</p>
+<pre><code>Preferences | Privacy &amp; Security | View Certificates | Authorities | Import
+</code></pre>
+
+<p>to upload</p>
+<pre><code>./export/ca/public/HomeLan.crt
+</code></pre>
+
+<p>Then click through</p>
+<pre><code>Preferences | Privacy &amp; Security | View Certificates | Your Certificates | Import
+</code></pre>
+
+<p>to upload</p>
+<pre><code>./export/private/Client1--HomeLan.p12
+</code></pre>
+
+<p>When uploading, Firefox will ask you for the password you set when creating it, if any.
+</details>
+<!-- ----------------------------------------------- --></p>
+<p><details><summary></p>
+<h3 id="step-7">step 7</h3>
+<p></summary>
+Copy files to the serving device running <em>lighttpd</em> -</p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Dest Dir</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>./export/ca/public/HomeLan.crt</td>
+<td>/etc/lighttpd/ssl/public/</td>
+</tr>
+<tr>
+<td>./export/private/PiSrv-HomeLan.key-crt.pem</td>
+<td>/etc/lighttpd/ssl/private/</td>
+</tr>
+</tbody>
+</table>
+<p>(The destinations can be freely chosen, this is just an example).</p>
+<p>Set the destination owner and permission as follows - </p>
+<table>
+<thead>
+<tr>
+<th>Dir or File</th>
+<th>owner:group</th>
+<th>perm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/etc/lighttpd/ssl/public/</td>
+<td>root:www-data</td>
+<td>755</td>
+</tr>
+<tr>
+<td>/etc/lighttpd/ssl/public/HomeLan.crt</td>
+<td>root:www-data</td>
+<td>644</td>
+</tr>
+<tr>
+<td>/etc/lighttpd/ssl/private/</td>
+<td>root:www-data</td>
+<td>750</td>
+</tr>
+<tr>
+<td>/etc/lighttpd/ssl/private/PiSrv-HomeLan.key-crt.pem</td>
+<td>root:www-data</td>
+<td>640</td>
+</tr>
+</tbody>
+</table>
+<p>These settings allow read access by <code>www-data</code> when serving.
+</details>
+<!-- ----------------------------------------------- --></p>
+<p><details><summary></p>
+<h3 id="step-8">step 8</h3>
+<p></summary>
+Configure an existing <em>lighttpd</em> configuration file where it configures the <em>https</em> port <em>443</em>.
+This might be in a file <code>/etc/lighttpd/external.conf</code>.</p>
+<p>In the case that <em>lighttpd</em> is already configured for <em>https</em> one-way authentication, then modify/add the following parameter settings to achieve our two-way authentication:</p>
+<pre><code>  $SERVER[&quot;socket&quot;] == &quot;:443&quot; {
+    ...
+    ssl.pemfile = &quot;/etc/lighttpd/ssl/private/PiSrv--HomeLan.key-crt.pem&quot;
+    ssl.ca-file =  &quot;/etc/lighttpd/ssl/public/HomeLan.crt&quot;
+    ...
+    ssl.verifyclient.activate = &quot;enable&quot;
+    ssl.verifyclient.enforce = &quot;enable&quot;
+    ssl.verifyclient.depth = &quot;2&quot;
+    ssl.verifyclient.username = &quot;SSL_CLIENT_S_DN_CN&quot;
+    }
+</code></pre>
+
+<p>In the case that <em>lighttpd</em> is not yet configured for <em>https</em> one-way authentication, then here is an example of settings for <em>https</em> two-way authentication:</p>
+<pre><code>$HTTP[&quot;host&quot;] =~ &quot;pihole($|\.home\.lan)&quot; {
+  # Ensure the Pi-hole Block Page knows that this is not a blocked domain
+  # PIHOLE APPLICATION SPECIFIC - ignore otherwise
+  #setenv.add-environment = (&quot;fqdn&quot; =&gt; &quot;true&quot;)
+
+  # Enable the SSL engine with a LE cert, only for this specific host
+  $SERVER[&quot;socket&quot;] == &quot;:443&quot; {
+    ssl.engine = &quot;enable&quot;
+    ssl.pemfile = &quot;/etc/lighttpd/ssl/PiSrv--HomeLan.key-crt.pem&quot;
+    ssl.ca-file =  &quot;/etc/lighttpd/ssl/public/HomeLan.crt&quot;
+    ssl.honor-cipher-order = &quot;enable&quot;
+    ssl.cipher-list = &quot;EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH&quot;
+    ssl.use-sslv2 = &quot;disable&quot;
+    ssl.use-sslv3 = &quot;disable&quot;
+    # client side authentification       
+    ssl.verifyclient.activate = &quot;enable&quot;
+    ssl.verifyclient.enforce = &quot;enable&quot;
+    ssl.verifyclient.depth = &quot;10&quot;
+    ssl.verifyclient.username = &quot;SSL_CLIENT_S_DN_CN&quot;
+###    ssl.verifyclient.username = &quot;SSL_CLIENT_S_DN_emailAddress&quot;
+    }
+
+  # Redirect HTTP to HTTPS
+  $HTTP[&quot;scheme&quot;] == &quot;http&quot; {
+    $HTTP[&quot;host&quot;] =~ &quot;.*&quot; {
+      url.redirect = (&quot;.*&quot; =&gt; &quot;https://%0$0&quot;)
+    }
+  }
+}
+</code></pre>
+
+<p>Note: The above two-way setting were adapted from
+[these one-way settings using an LE cert]
+(https://discourse.pi-hole.net/t/enabling-https-for-your-pi-hole-web-interface/5771).</p>
+<p></details>
+<!-- ----------------------------------------------- --></p>
+<p><details><summary></p>
+<h3 id="step-9">step 9</h3>
+<p></summary>
+Now create a new additional <em>lighttpd</em> configuration file</p>
+<pre><code>sudo nano /etc/lighttpd/conf-available/02-auth-cert.conf
+</code></pre>
+
+<p>with content</p>
+<pre><code># comment out the next line to silence warnings if &quot;mod_auth&quot; already loaded
+server.modules += (&quot;mod_auth&quot;)
+auth.require = ( &quot;&quot; =&gt;
+                 (
+                   &quot;method&quot;  =&gt; &quot;extern&quot;,
+                   &quot;realm&quot;   =&gt; &quot;certificate&quot;,
+                   &quot;require&quot; =&gt; &quot;user=Client1--HomeLan&quot; 
+                 )
+               )
+</code></pre>
+
+<p>Note: To allow multiple client IDs, separate by <code>|</code> and prefix each ID with `user=", e.g.,:</p>
+<pre><code>                   &quot;require&quot; =&gt; &quot;user=Client1--HomeLan|user=Client2--HomeLan&quot; 
+</code></pre>
+
+<p></details></p>
+<!-- ----------------------------------------------- -->
+
+<p><details><summary></p>
+<h3 id="step-10">step 10</h3>
+<p></summary>
+Restart the lighttpd daemon -</p>
+<pre><code>systemctl restart lighttpd
+</code></pre>
+
+<p>or</p>
+<pre><code>service lighttpd restart
+</code></pre>
+
+<p>Check the status is OK -</p>
+<pre><code>systemctl status lighttpd
+</code></pre>
+
+<p>or</p>
+<pre><code>service lighttpd status
+</code></pre>
+
+<p></details></p>
+<!-- ----------------------------------------------- -->
+
+<p><details><summary></p>
+<h3 id="step-11">step 11</h3>
+<p></summary>
+Test access of the server from the Firefox browser, e.g., enter the address <code>pihole.home.lan</code> or <code>192.168.1.20</code> into the address bar.  On the first access Firefox will put up a dialog box for you to confirm the client certificate <code>Client1--HomeLan.p12</code>.  If you don't see the dialog box hunt around for it.  I once found it in another workspace under an already existing window.
+</details></p>
+<!-- ----------------------------------------------- -->
+
+<p><details><summary></p>
+<h3 id="step-12">step 12</h3>
+<p></summary>
+Add more clients and servers to the network using the same CA, if required.
+</details></p>
+<p></details>
+<!-- ----------------------------------------------- --></p>
+<!-- ----------------------------------------------- -->
+
+<!-- ----------------------------------------------- -->
+
+<!-- ----------------------------------------------- -->
+
+<!-- ----------------------------------------------- -->
+
+<!--
+<details><summary>
+</summary>
+</details>
+--></div>
         </div>
 
         <footer class="col-md-12">
@@ -114,5 +528,5 @@ docs/
 
 <!--
 MkDocs version : 0.16.3
-Build Date UTC : 2019-02-28 20:21:20
+Build Date UTC : 2019-03-01 00:10:15
 -->
