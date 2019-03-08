@@ -166,7 +166,7 @@ is a single string with no spaces. It was broken into two lines only to fit in t
 <p>We will show step by step how to create these certs using our simple script file <code>privca</code>.</p>
 
 <p>Of course you can use any method or tools to create the certs as long as they fulfill the above specifications.
-If you do so you may proceed directly to the <a href="iwozere">step by step guide to installation</a>.</p>
+If you do so you may proceed directly to the <a href="steps-install-config">step by step guide to installation</a>.</p>
 
 <h4>Overview of each cert role</h4>
 
@@ -226,7 +226,7 @@ If you do so you may proceed directly to the <a href="iwozere">step by step guid
 
 </details>
 
-<!-- -------------- IWOZERE ----------------- -->
+<!-- -------------- ------- ----------------- -->
 
 <p><details open markdown=1>
 <summary></p>
@@ -260,12 +260,11 @@ sudo chmod +x privca
 <p>Create the CA cert.
 <div class="highlight"><pre><span></span>./privca CreateCA Root1 MyOrg
 </pre></div></p>
-<p>iwozere</p>
 <h4>certs step 4</h4>
 <p>Create the Server cert.
 <div class="highlight"><pre><span></span>./privca CreateServer PiSrv DNS:pihole.home.lan,DNS:pihole,IP:192.168.1.20
 </pre></div></p>
-<p>Note: here it is assumed that you already have local DNS functionality to recognize <em>pihole.home.lan</em> and <em>pihole</em>.  Test any address, including the IP, with <code>ping</code>.</p>
+<p>Note: here it is assumed that you already have local DNS functionality to recognize <em>pihole.home.lan</em> and <em>pihole</em>.  Test any address, including the IP, with <code>ping</code>.  If not you might be able to use your <code>/etc/hosts</code> file to link the name and address for DNS.</p>
 <h4>certs step 5</h4>
 <p>Create the Client cert.  Prepare a password to set for the <code>.p12</code> certificate.  You will need to use it again when uploading the certificate to Firefox browser.  Hit return only to set no password.
 <div class="highlight"><pre><span></span>./privca CreateClient Client1
@@ -306,7 +305,7 @@ the <strong>export</strong> directory will be used for configuration.</p>
 
 <p><details open markdown=1>
 <summary></p>
-<h3>Steps to install certs</h3>
+<h3 id="steps-install-config">Steps to install certs and configure</h3>
 <p>A step by step guide to configuring the certs on <em>lighttpd</em> and <em>Firefox</em>.
 In addition, the required changes to the <em>lighttpd</em> configuration file
 are shown in detail.</p>
@@ -330,13 +329,10 @@ are shown in detail.</p>
 </pre></div>
 
 <p>When uploading, Firefox will ask you for the password you set when creating it, if any.</p>
-<p><details open markdown=1>
-<summary></p>
-<h4>install steps 2 - 4</h4>
+<h4 install-lighttpd="install-lighttpd">install steps 2 - 4</h4>
 <p>Steps 2 through 4 describe configuation for <em>lighttpd</em>.
-It may also be helpful to read our summary of relevant <em>lighttpd</em> documentation
-provided <a href="#lighttpd-doc-summary">here</a>
-</summary></p>
+We prepared summary of relevant <em>lighttpd</em> documentation
+provided <a href="#lighttpd-doc-summary">here</a>, although it is not necessary for this step by step guide.</p>
 <h4>install step 2</h4>
 <p>Copy files to the serving device running <em>lighttpd</em> -</p>
 <table>
@@ -466,8 +462,6 @@ auth.require = ( &quot;&quot; =&gt;
 <div class="highlight"><pre><span></span>                  &quot;require&quot; =&gt; &quot;user=Client1|user=Client2&quot; 
 </pre></div>
 
-</details>
-
 <!-- ----------------------------------------------- -->
 
 <h4>install step 5</h4>
@@ -500,6 +494,8 @@ or
 <p><details open markdown=1>
 <summary></p>
 <h2 id="lighttpd-doc-summary"><em>lighttpd</em> documentation on two-way security</h2>
+<p>A step by step guide to configuring <em>lighttpd</em> with the certs you created is given in
+given <a href="#install-lighttpd">above</a> in Install steps 2 through 4.  This section is only for reference.</p>
 <p></summary></p>
 <p>The lighttpd <a href="https://redmine.lighttpd.net/projects/lighttpd/wiki/Docs_SSL">SSL documentation</a>
 describes the relevant parameters for one-way authentication:</p>
@@ -567,8 +563,6 @@ and not just pass the value to an application.  The <a href="https://redmine.lig
                )
 </pre></div>
 
-<p>Putting all this information together will be covered in
-section <a href="#fullexample">iwozere</a></p>
 <p><details open markdown=1>
 <summary></p>
 <h3>Special Note on the parameter <code>ssl.ca-file</code></h3>
@@ -640,5 +634,5 @@ to the client, Server Authentication can succeed with parameter <code>ssl.ca-fil
 
 <!--
 MkDocs version : 0.16.3
-Build Date UTC : 2019-03-08 06:17:18
+Build Date UTC : 2019-03-08 06:58:33
 -->
