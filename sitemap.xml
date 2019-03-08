@@ -4,7 +4,15 @@
     
     <url>
      <loc>/</loc>
-     <lastmod>2019-02-28</lastmod>
+     <lastmod>2019-03-07</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>/privca-man/</loc>
+     <lastmod>2019-03-07</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
