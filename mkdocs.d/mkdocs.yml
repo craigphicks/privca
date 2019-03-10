@@ -1,0 +1,49 @@
+# Project information
+site_name: 'Server/Client 2-way Authentication w/ Private CA'
+site_description: 'Step by step guide to issuing private certs for Server and Client Side Authentication - specifically *lighttpd* and *Firefox*'
+site_author: 'Craig Hicks'
+site_url: 'https://craigphicks.github.io/privca'
+
+# Repository
+#repo_name: 'craigphicks/privca'
+#repo_url: 'https://github.com/craigphicks/privca'
+
+# Copyright
+copyright: 'Copyright &copy; Craig Hicks 2019'
+
+# Configuration
+theme:
+  name: 'material'
+  language: 'en'
+  palette:
+    primary: 'indigo'
+    accent: 'indigo'
+  font:
+    text: 'Roboto'
+    code: 'Roboto Mono'
+
+# Customization
+extra:
+  manifest: 'manifest.webmanifest'
+  social:
+  - type: 'github'
+    link: 'https://github.com/craigphicks'
+# #   - type: 'twitter'
+# #     link: 'https://twitter.com/squidfunk'
+# #   - type: 'linkedin'
+# #     link: 'https://linkedin.com/in/squidfunk'
+
+# Google Analytics
+# google_analytics:
+#   - 'UA-XXXXXXXX-X'
+#   - 'auto'
+
+# Extensions
+markdown_extensions:
+  - attr_list
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - toc:
+      permalink: true
+      

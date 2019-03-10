@@ -1,0 +1,7 @@
+site
+tmp
+hold
+pyenv
+theme-mkdocs-copy
+*.tmp
+
