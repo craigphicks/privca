@@ -1,108 +1,643 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="None">
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+        <meta name="description" content="Step by step guide to issuing private certs for Server and Client Side Authentication - specifically *lighttpd* and *Firefox*">
+      
+      
+        <link rel="canonical" href="https://craigphicks.github.io/privca/">
+      
+      
+        <meta name="author" content="Craig Hicks">
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.0.2">
+    
+    
+      
+        <title>Server/Client 2-way Authentication w/ Private CA</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/application.982221ab.css">
+      
+        <link rel="stylesheet" href="assets/stylesheets/application-palette.224b79ff.css">
+      
+      
         
         
-        <link rel="shortcut icon" href="./img/favicon.ico">
-        <title>Server and Client Side Authentication - Example w/ Lighttpd, Firefox</title>
-        <link href="./css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="./css/font-awesome-4.5.0.css" rel="stylesheet">
-        <link href="./css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="./css/highlight.css">
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-        <![endif]-->
-	
-	<script src="./js/jquery-1.10.2.min.js"></script>
-        <script src="./js/bootstrap-3.0.3.min.js"></script>
-        <script src="./js/highlight.pack.js"></script> 
-    </head>
-
-    <body class="homepage">
-
-        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="container">
-
-        <!-- Collapsed navigation -->
-        <div class="navbar-header">
-            <!-- Expander button -->
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href=".">Server and Client Side Authentication - Example w/ Lighttpd, Firefox</a>
+        <meta name="theme-color" content="#3f51b5">
+      
+    
+    
+      <script src="assets/javascripts/modernizr.1f0bcf2b.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="assets/fonts/material-icons.css">
+    
+      <link rel="manifest" href="manifest.webmanifest">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#summary" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="https://craigphicks.github.io/privca" title="Server/Client 2-way Authentication w/ Private CA" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              Server/Client 2-way Authentication w/ Private CA
+            </span>
+            <span class="md-header-nav__topic">
+              Home
+            </span>
+          
         </div>
-
-        <!-- Expanded navigation -->
-        <div class="navbar-collapse collapse">
-                <!-- Main navigation -->
-                <ul class="nav navbar-nav">
-                    <li class="active">
-                        <a href=".">Home</a>
-                    </li>
-                    <li >
-                        <a href="privca-man/">Privca man</a>
-                    </li>
-                </ul>
-
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
-                        <i class="fa fa-search"></i> Search
-                    </a>
-                </li>
-                    <li class="disabled">
-                        <a rel="next" >
-                            <i class="fa fa-arrow-left"></i> Previous
-                        </a>
-                    </li>
-                    <li >
-                        <a rel="prev" href="privca-man/">
-                            Next <i class="fa fa-arrow-right"></i>
-                        </a>
-                    </li>
-            </ul>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
         </div>
+      </div>
     </div>
+  </div>
 </div>
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="https://craigphicks.github.io/privca" title="Server/Client 2-way Authentication w/ Private CA" class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </a>
+    Server/Client 2-way Authentication w/ Private CA
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
 
-        <div class="container">
-                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
-    <ul class="nav bs-sidenav">
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Home
+      </label>
+    
+    <a href="." title="Home" class="md-nav__link md-nav__link--active">
+      Home
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#summary" title="Summary" class="md-nav__link">
+    Summary
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#specs-for-the-certs" title="Specs for the certs" class="md-nav__link">
+    Specs for the certs
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#table-cert-specs" title="Table 1: Cert specifications" class="md-nav__link">
+    Table 1: Cert specifications
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overview-of-each-cert-role" title="Overview of each cert role" class="md-nav__link">
+    Overview of each cert role
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#table-combined-certs" title="Table 2: Combined certs" class="md-nav__link">
+    Table 2: Combined certs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#table-roles" title="Table 3: Authenticatee/Authenticator Roles" class="md-nav__link">
+    Table 3: Authenticatee/Authenticator Roles
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#making-certs" title="Example of making certs with privca" class="md-nav__link">
+    Example of making certs with privca
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#certs-step-1" title="certs step 1" class="md-nav__link">
+    certs step 1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#certs-step-2" title="certs step 2" class="md-nav__link">
+    certs step 2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#certs-step-3" title="certs step 3" class="md-nav__link">
+    certs step 3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#certs-step-4" title="certs step 4" class="md-nav__link">
+    certs step 4
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#certs-step-5" title="certs step 5" class="md-nav__link">
+    certs step 5
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#certs-step-6" title="certs step 6" class="md-nav__link">
+    certs step 6
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-certs-firefox" title="Install certs on Firefox" class="md-nav__link">
+    Install certs on Firefox
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steps-install-config-lighttpd" title="Install certs and configure for lighttpd" class="md-nav__link">
+    Install certs and configure for lighttpd
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-step-2" title="install step 2" class="md-nav__link">
+    install step 2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-step-3" title="install step 3" class="md-nav__link">
+    install step 3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-step-4" title="install step 4" class="md-nav__link">
+    install step 4
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-step-5" title="install step 5" class="md-nav__link">
+    install step 5
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-step-6" title="install step 6" class="md-nav__link">
+    install step 6
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-step-7" title="install step 7" class="md-nav__link">
+    install step 7
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lighttpd-doc-summary" title="Summary of lighttpd documentation on two-way authorization" class="md-nav__link">
+    Summary of lighttpd documentation on two-way authorization
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
     </ul>
-</div></div>
-                <div class="col-md-9" role="main">
+  
+</nav>
+    
+  </li>
 
-<!-- site_name: Two way SSL authentication in a private network - example is shown using Lighttpd and Firefox -->
+    
+      
+      
+      
 
-<h2>Summary</h2>
 
+  <li class="md-nav__item">
+    <a href="privca/" title="Privca" class="md-nav__link">
+      Privca
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#summary" title="Summary" class="md-nav__link">
+    Summary
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#specs-for-the-certs" title="Specs for the certs" class="md-nav__link">
+    Specs for the certs
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#table-cert-specs" title="Table 1: Cert specifications" class="md-nav__link">
+    Table 1: Cert specifications
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overview-of-each-cert-role" title="Overview of each cert role" class="md-nav__link">
+    Overview of each cert role
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#table-combined-certs" title="Table 2: Combined certs" class="md-nav__link">
+    Table 2: Combined certs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#table-roles" title="Table 3: Authenticatee/Authenticator Roles" class="md-nav__link">
+    Table 3: Authenticatee/Authenticator Roles
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#making-certs" title="Example of making certs with privca" class="md-nav__link">
+    Example of making certs with privca
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#certs-step-1" title="certs step 1" class="md-nav__link">
+    certs step 1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#certs-step-2" title="certs step 2" class="md-nav__link">
+    certs step 2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#certs-step-3" title="certs step 3" class="md-nav__link">
+    certs step 3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#certs-step-4" title="certs step 4" class="md-nav__link">
+    certs step 4
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#certs-step-5" title="certs step 5" class="md-nav__link">
+    certs step 5
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#certs-step-6" title="certs step 6" class="md-nav__link">
+    certs step 6
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-certs-firefox" title="Install certs on Firefox" class="md-nav__link">
+    Install certs on Firefox
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steps-install-config-lighttpd" title="Install certs and configure for lighttpd" class="md-nav__link">
+    Install certs and configure for lighttpd
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-step-2" title="install step 2" class="md-nav__link">
+    install step 2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-step-3" title="install step 3" class="md-nav__link">
+    install step 3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-step-4" title="install step 4" class="md-nav__link">
+    install step 4
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-step-5" title="install step 5" class="md-nav__link">
+    install step 5
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-step-6" title="install step 6" class="md-nav__link">
+    install step 6
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-step-7" title="install step 7" class="md-nav__link">
+    install step 7
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lighttpd-doc-summary" title="Summary of lighttpd documentation on two-way authorization" class="md-nav__link">
+    Summary of lighttpd documentation on two-way authorization
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>Home</h1>
+                
+                <!--BEGINTOC-->
+
+<!-- [TOC] -->
+
+<!--ENDTOC-->
+
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
 <p>Client Side Authentification is the counterpart to Server Authentication in HTTPS, together making Two-way Authentication.  Using a private CA (Certificate Authority) to issue both Server and Client certificates is a sensible approach.  This document provides a step-by-step example where <em>lighttpd v1.4.45</em> is server, and Firebox Browser v65.0 is client.</p>
-
 <!-- ----------------------------------------------- -->
 
-<h2><a name="fullexample"></a> Example setup with <em>lighttpd</em> and <em>Firefox</em></h2>
-
-<p><details open markdown=1>
-<summary></p>
-
-<h3>Specs for the certs</h3>
-
+<h2 id="example-setup-with-lighttpd-and-firefox"><a name="fullexample"></a> Example setup with <em>lighttpd</em> and <em>Firefox</em><a class="headerlink" href="#example-setup-with-lighttpd-and-firefox" title="Permanent link">&para;</a></h2>
+<h3 id="specs-for-the-certs">Specs for the certs<a class="headerlink" href="#specs-for-the-certs" title="Permanent link">&para;</a></h3>
 <p>We describe the certs and what fields they must contain.
 A table is used to show what role they play in authentication. </p>
-
-<p></summary></p>
-
 <p>We need one private root and two leaf certificates with the following specifications:</p>
-
+<h5 id="table-cert-specs">Table 1: Cert specifications<a class="headerlink" href="#table-cert-specs" title="Permanent link">&para;</a></h5>
 <table>
 <thead>
 <tr>
@@ -157,21 +692,19 @@ A table is used to show what role they play in authentication. </p>
 </tr>
 </tbody>
 </table>
-
 <!--
 *Note:* The field **DNS:pihole.home.lan,DNS:pihole,IP:192.168.1.20**
 is a single string with no spaces. It was broken into two lines only to fit in the table.
 -->
 
 <p>We will show step by step how to create these certs using our simple script file <code>privca</code>.</p>
-
-<p>Of course you can use any method or tools to create the certs as long as they fulfill the above specifications.
-If you do so you may proceed directly to the <a href="steps-install-config">step by step guide to installation</a>.</p>
-
-<h4>Overview of each cert role</h4>
-
-<p>The combined key+cert files shown in the bottom row of <a href="#table-cert-req">table 1</a> are composed as follows:</p>
-
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Of course you can use any method or tools to create the certs as long as they fulfill the above specifications.  If you do so you may proceed directly to the step by step guide to certificate installation on and configuration of <a href="#install-certs-firefox">Firefox</a> and <a href="#steps-install-config-lighttpd">lighttpd</a>.</p>
+</div>
+<h4 id="overview-of-each-cert-role">Overview of each cert role<a class="headerlink" href="#overview-of-each-cert-role" title="Permanent link">&para;</a></h4>
+<p>The combined key+cert files shown in the bottom row of <a href="#table-cert-specs">table 1</a> are composed as follows:</p>
+<h5 id="table-combined-certs">Table 2: Combined certs<a class="headerlink" href="#table-combined-certs" title="Permanent link">&para;</a></h5>
 <table>
 <thead>
 <tr>
@@ -196,9 +729,8 @@ If you do so you may proceed directly to the <a href="steps-install-config">step
 </tr>
 </tbody>
 </table>
-
 <p>The next table shows to where the files will eventually be exported (server side or client side) and the role they will play (authenticator or authenticatee):</p>
-
+<h5 id="table-roles">Table 3: Authenticatee/Authenticator Roles<a class="headerlink" href="#table-roles" title="Permanent link">&para;</a></h5>
 <table>
 <thead>
 <tr>
@@ -223,56 +755,54 @@ If you do so you may proceed directly to the <a href="steps-install-config">step
 </tr>
 </tbody>
 </table>
-
-</details>
-
 <!-- -------------- ------- ----------------- -->
 
-<p><details open markdown=1>
-<summary></p>
-
-<h3 id="making-certs">Example of making certs with <code>privca</code></h3>
-
+<h3 id="making-certs">Example of making certs with <code>privca</code><a class="headerlink" href="#making-certs" title="Permanent link">&para;</a></h3>
 <p>Step by step guide to creating the certs with provided tool.</p>
-
-<p></summary></p>
-
-<h4>certs step 1</h4>
-
+<h4 id="certs-step-1">certs step 1<a class="headerlink" href="#certs-step-1" title="Permanent link">&para;</a></h4>
 <p>On your main workstation, create a directory named <em>Root1</em> which will contain the private CA and all the leaf certificates that private CA issues.<br />
 Then <code>cd</code> to that directory. E.g., <code>/etc/ssl/privca.d/Root1</code></p>
-
-<div class="highlight"><pre><span></span>sudo mkdir /etc/ssl/privca.d/Root1
+<div class="codehilite"><pre><span></span>sudo mkdir /etc/ssl/privca.d/Root1
 cd /etc/ssl/privca.d/Root1
 </pre></div>
 
-<h4>certs step 2</h4>
 
-<p>Copy the <em>privca</em> shell script to that directory, (or place it somewhere in your path).  Make it executable.
-<div class="highlight"><pre><span></span>wget https://gist.githubusercontent.com/craigphicks/c9dae527b30441730f62c9c9e9dab5a1/raw/dfd43fff631850e6978a6769f82eba76ef6abe60/privca.sh
+<h4 id="certs-step-2">certs step 2<a class="headerlink" href="#certs-step-2" title="Permanent link">&para;</a></h4>
+<p>Copy the <em>privca</em> shell script to that directory, (or place it somewhere in your path).  Make it executable.</p>
+<div class="codehilite"><pre><span></span>wget https://gist.githubusercontent.com/craigphicks/c9dae527b30441730f62c9c9e9dab5a1/raw/dfd43fff631850e6978a6769f82eba76ef6abe60/privca.sh
 mv privca.sh privca
 sudo chmod +x privca
-</pre></div></p>
-<blockquote>
-<p>Note: For your reference there is a <a href="privca-man">man page for privca</a>.  Although it is not necessary for this example.</p>
-</blockquote>
-<h4>certs step 3</h4>
-<p>Create the CA cert.
-<div class="highlight"><pre><span></span>./privca CreateCA Root1 MyOrg
-</pre></div></p>
-<h4>certs step 4</h4>
-<p>Create the Server cert.
-<div class="highlight"><pre><span></span>./privca CreateServer PiSrv DNS:pihole.home.lan,DNS:pihole,IP:192.168.1.20
-</pre></div></p>
+</pre></div>
+
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For your reference there is a <a href="privca-man">man page for privca</a>.<br />
+Although it is not necessary for this example.</p>
+</div>
+<h4 id="certs-step-3">certs step 3<a class="headerlink" href="#certs-step-3" title="Permanent link">&para;</a></h4>
+<p>Create the CA cert.</p>
+<div class="codehilite"><pre><span></span>./privca CreateCA Root1 MyOrg
+</pre></div>
+
+
+<h4 id="certs-step-4">certs step 4<a class="headerlink" href="#certs-step-4" title="Permanent link">&para;</a></h4>
+<p>Create the Server cert.</p>
+<div class="codehilite"><pre><span></span>./privca CreateServer PiSrv DNS:pihole.home.lan,DNS:pihole,IP:192.168.1.20
+</pre></div>
+
+
 <p>Note: here it is assumed that you already have local DNS functionality to recognize <em>pihole.home.lan</em> and <em>pihole</em>.  Test any address, including the IP, with <code>ping</code>.  If not you might be able to use your <code>/etc/hosts</code> file to link the name and address for DNS.</p>
-<h4>certs step 5</h4>
-<p>Create the Client cert.  Prepare a password to set for the <code>.p12</code> certificate.  You will need to use it again when uploading the certificate to Firefox browser.  Hit return only to set no password.
-<div class="highlight"><pre><span></span>./privca CreateClient Client1
+<h4 id="certs-step-5">certs step 5<a class="headerlink" href="#certs-step-5" title="Permanent link">&para;</a></h4>
+<p>Create the Client cert.  Prepare a password to set for the <code>.p12</code> certificate.  You will need to use it again when uploading the certificate to Firefox browser.  Hit return only to set no password.</p>
+<div class="codehilite"><pre><span></span>./privca CreateClient Client1
 &lt;interactively enter password&gt;
-</pre></div></p>
-<h4>certs step 6</h4>
-<p>Confirm the diretory tree looks like this:
-<div class="highlight"><pre><span></span># tree
+</pre></div>
+
+
+<h4 id="certs-step-6">certs step 6<a class="headerlink" href="#certs-step-6" title="Permanent link">&para;</a></h4>
+<p>Confirm the diretory tree looks like this:</p>
+<div class="codehilite"><pre><span></span># tree
 .
 ├── ca
 │   ├── private
@@ -296,44 +826,43 @@ sudo chmod +x privca
     └── Server1.csr
 
 9 directories, 11 files
-</pre></div></p>
+</pre></div>
+
+
 <p>In our example configuration the files under
 the <strong>export</strong> directory will be used for configuration.</p>
-</details>
-
 <!-- ----------------------------------------------- -->
 
-<p><details open markdown=1>
-<summary></p>
-<h3 id="steps-install-config">Steps to install certs and configure</h3>
-<p>A step by step guide to configuring the certs on <em>lighttpd</em> and <em>Firefox</em>.
-In addition, the required changes to the <em>lighttpd</em> configuration file
-are shown in detail.</p>
-<p></summary></p>
-<h4>install step 1</h4>
+<h3 id="install-certs-firefox">Install certs on Firefox<a class="headerlink" href="#install-certs-firefox" title="Permanent link">&para;</a></h3>
 <p>From Firefox -</p>
 <p>Click through</p>
-<div class="highlight"><pre><span></span>Preferences | Privacy &amp; Security | View Certificates | Authorities | Import
+<div class="codehilite"><pre><span></span>Preferences | Privacy &amp; Security | View Certificates | Authorities | Import
 </pre></div>
 
+
 <p>to upload</p>
-<div class="highlight"><pre><span></span>./export/ca/public/Root1.crt
+<div class="codehilite"><pre><span></span>./export/ca/public/Root1.crt
 </pre></div>
+
 
 <p>Then click through</p>
-<div class="highlight"><pre><span></span>Preferences | Privacy &amp; Security | View Certificates | Your Certificates | Import
+<div class="codehilite"><pre><span></span>Preferences | Privacy &amp; Security | View Certificates | Your Certificates | Import
 </pre></div>
+
 
 <p>to upload</p>
-<div class="highlight"><pre><span></span>./export/private/Root1.p12
+<div class="codehilite"><pre><span></span>./export/private/Root1.p12
 </pre></div>
 
+
 <p>When uploading, Firefox will ask you for the password you set when creating it, if any.</p>
-<h4 install-lighttpd="install-lighttpd">install steps 2 - 4</h4>
-<p>Steps 2 through 4 describe configuation for <em>lighttpd</em>.
-We prepared summary of relevant <em>lighttpd</em> documentation
-provided <a href="#lighttpd-doc-summary">here</a>, although it is not necessary for this step by step guide.</p>
-<h4>install step 2</h4>
+<h3 id="steps-install-config-lighttpd">Install certs and configure for <code>lighttpd</code><a class="headerlink" href="#steps-install-config-lighttpd" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Our summary of relevant <em>lighttpd</em> documentation is <a href="#lighttpd-doc-summary">here</a>, 
+although it is not necessary for following this step by step guide.</p>
+</div>
+<h4 id="install-step-2">install step 2<a class="headerlink" href="#install-step-2" title="Permanent link">&para;</a></h4>
 <p>Copy files to the serving device running <em>lighttpd</em> -</p>
 <table>
 <thead>
@@ -389,11 +918,11 @@ provided <a href="#lighttpd-doc-summary">here</a>, although it is not necessary 
 <p>These settings allow read access by <code>www-data</code> when serving.</p>
 <!-- ----------------------------------------------- -->
 
-<h4>install step 3</h4>
+<h4 id="install-step-3">install step 3<a class="headerlink" href="#install-step-3" title="Permanent link">&para;</a></h4>
 <p>Configure an existing <em>lighttpd</em> configuration file where it configures the <em>https</em> port <em>443</em>.
 This might be in a file <code>/etc/lighttpd/external.conf</code>.</p>
-<p>In the case that <em>lighttpd</em> is already configured for <em>https</em> one-way authentication, then modify/add the following parameter settings to achieve our two-way authentication:
-<div class="highlight"><pre><span></span>  $SERVER[&quot;socket&quot;] == &quot;:443&quot; {
+<p>In the case that <em>lighttpd</em> is already configured for <em>https</em> one-way authentication, then modify/add the following parameter settings to achieve our two-way authentication:</p>
+<div class="codehilite"><pre><span></span>  $SERVER[&quot;socket&quot;] == &quot;:443&quot; {
     ...
     ssl.pemfile = &quot;/etc/lighttpd/ssl/private/Server1.key-crt.pem&quot;
     ssl.ca-file =  &quot;/etc/lighttpd/ssl/public/Root1.crt&quot;
@@ -403,9 +932,11 @@ This might be in a file <code>/etc/lighttpd/external.conf</code>.</p>
     ssl.verifyclient.depth = &quot;2&quot;
     ssl.verifyclient.username = &quot;SSL_CLIENT_S_DN_CN&quot;
     }
-</pre></div></p>
+</pre></div>
+
+
 <p>In the case that <em>lighttpd</em> is not yet configured for <em>https</em> one-way authentication, then here is an example of settings for <em>https</em> two-way authentication:</p>
-<div class="highlight"><pre><span></span>$HTTP[&quot;host&quot;] =~ &quot;pihole($|\.home\.lan)&quot; {
+<div class="codehilite"><pre><span></span>$HTTP[&quot;host&quot;] =~ &quot;pihole($|\.home\.lan)&quot; {
   # Ensure the Pi-hole Block Page knows that this is not a blocked domain
   # PIHOLE APPLICATION SPECIFIC - ignore otherwise
   #setenv.add-environment = (&quot;fqdn&quot; =&gt; &quot;true&quot;)
@@ -436,6 +967,7 @@ This might be in a file <code>/etc/lighttpd/external.conf</code>.</p>
 }
 </pre></div>
 
+
 <blockquote>
 <p>Note: The above two-way setting were adapted from
 [these one-way settings using an LE cert]
@@ -443,12 +975,14 @@ This might be in a file <code>/etc/lighttpd/external.conf</code>.</p>
 </blockquote>
 <!-- ----------------------------------------------- -->
 
-<h4>install step 4</h4>
-<p>Now create a new additional <em>lighttpd</em> configuration file
-<div class="highlight"><pre><span></span>sudo nano /etc/lighttpd/conf-available/02-auth-cert.conf
+<h4 id="install-step-4">install step 4<a class="headerlink" href="#install-step-4" title="Permanent link">&para;</a></h4>
+<p>Now create a new additional <em>lighttpd</em> configuration file</p>
+<div class="codehilite"><pre><span></span>sudo nano /etc/lighttpd/conf-available/02-auth-cert.conf
 </pre></div>
-with content
-<div class="highlight"><pre><span></span># comment out the next line to silence warnings if &quot;mod_auth&quot; already loaded
+
+
+<p>with content</p>
+<div class="codehilite"><pre><span></span># comment out the next line to silence warnings if &quot;mod_auth&quot; already loaded
 server.modules += (&quot;mod_auth&quot;)
 auth.require = ( &quot;&quot; =&gt;
                  (
@@ -457,46 +991,52 @@ auth.require = ( &quot;&quot; =&gt;
                    &quot;require&quot; =&gt; &quot;user=Client1&quot; 
                  )
                )
-</pre></div></p>
+</pre></div>
+
+
 <p>Note: To allow multiple client IDs, separate by <code>|</code> and prefix each ID with <code>user=</code>, e.g.,:</p>
-<div class="highlight"><pre><span></span>                  &quot;require&quot; =&gt; &quot;user=Client1|user=Client2&quot; 
+<div class="codehilite"><pre><span></span>                  &quot;require&quot; =&gt; &quot;user=Client1|user=Client2&quot; 
 </pre></div>
+
 
 <!-- ----------------------------------------------- -->
 
-<h4>install step 5</h4>
-<p>Restart the lighttpd daemon -
-<div class="highlight"><pre><span></span>systemctl restart lighttpd
+<h4 id="install-step-5">install step 5<a class="headerlink" href="#install-step-5" title="Permanent link">&para;</a></h4>
+<p>Restart the lighttpd daemon -</p>
+<div class="codehilite"><pre><span></span>systemctl restart lighttpd
 </pre></div>
-or
-<div class="highlight"><pre><span></span>service lighttpd restart
-</pre></div></p>
-<p>Check the status is OK -
-<div class="highlight"><pre><span></span>systemctl status lighttpd
+
+
+<p>or</p>
+<div class="codehilite"><pre><span></span>service lighttpd restart
 </pre></div>
-or
-<div class="highlight"><pre><span></span>service lighttpd status
-</pre></div></p>
+
+
+<p>Check the status is OK -</p>
+<div class="codehilite"><pre><span></span>systemctl status lighttpd
+</pre></div>
+
+
+<p>or</p>
+<div class="codehilite"><pre><span></span>service lighttpd status
+</pre></div>
+
+
 <!-- ----------------------------------------------- -->
 
-<h4>install step 6</h4>
+<h4 id="install-step-6">install step 6<a class="headerlink" href="#install-step-6" title="Permanent link">&para;</a></h4>
 <p>Test access of the server from the Firefox browser, e.g., enter the address <code>pihole.home.lan</code> or <code>192.168.1.20</code> into the address bar.  On the first access Firefox will put up a dialog box for you to confirm the client certificate <code>Client1.p12</code>.  If you don't see the dialog box hunt around for it.  I once found it in another workspace under an already existing window.</p>
 <!-- ----------------------------------------------- -->
 
-<h4>install step 7</h4>
+<h4 id="install-step-7">install step 7<a class="headerlink" href="#install-step-7" title="Permanent link">&para;</a></h4>
 <p>Add more clients and servers to the network using the same CA, if required.</p>
 <!-- ----------------------------------------------- -->
 
-</details>
-
 <!-- ----------------------------------------------- -->
 
-<p><details open markdown=1>
-<summary></p>
-<h2 id="lighttpd-doc-summary"><em>lighttpd</em> documentation on two-way security</h2>
+<h2 id="lighttpd-doc-summary">Summary of <em>lighttpd</em> documentation on two-way authorization<a class="headerlink" href="#lighttpd-doc-summary" title="Permanent link">&para;</a></h2>
 <p>A step by step guide to configuring <em>lighttpd</em> with the certs you created is given in
 given <a href="#install-lighttpd">above</a> in Install steps 2 through 4.  This section is only for reference.</p>
-<p></summary></p>
 <p>The lighttpd <a href="https://redmine.lighttpd.net/projects/lighttpd/wiki/Docs_SSL">SSL documentation</a>
 describes the relevant parameters for one-way authentication:</p>
 <table>
@@ -549,12 +1089,14 @@ describes the relevant parameters for one-way authentication:</p>
 </tbody>
 </table>
 <p>Setting</p>
-<pre><code>ssl.verifyclient.username = SSL_CLIENT_S_DN_CN
-</code></pre>
+<div class="codehilite"><pre><span></span>ssl.verifyclient.username = SSL_CLIENT_S_DN_CN
+</pre></div>
+
+
 <p>will make  the "Common Name" of the client certificate available.</p>
 <p>We want to use this "Common Name" for authentification in the <em>lighttpd</em> server itself,
 and not just pass the value to an application.  The <a href="https://redmine.lighttpd.net/projects/lighttpd/wiki/Docs_ModAuth">Mod_Auth documentation</a> describes how to do this:</p>
-<div class="highlight"><pre><span></span>auth.require = ( &quot;&quot; =&gt;
+<div class="codehilite"><pre><span></span>auth.require = ( &quot;&quot; =&gt;
                  (
                    &quot;method&quot;  =&gt; &quot;extern&quot;,
                    &quot;realm&quot;   =&gt; &quot;certificate&quot;,
@@ -563,76 +1105,106 @@ and not just pass the value to an application.  The <a href="https://redmine.lig
                )
 </pre></div>
 
-<p><details open markdown=1>
-<summary></p>
-<h3>Special Note on the parameter <code>ssl.ca-file</code></h3>
-<p></summary></p>
-<p>The documentation states purpose as <em>"path to the CA file for support of chained certificates"</em>.  Probably this stentence was written thinking only of the case Server Authentication, where the server is the Authenticee holding a leaf secret-key &amp; cert, and the client is the Authenticator holding the root CA public cert.</p>
+
+<div class="admonition tldr">
+<p class="admonition-title">TLDR: Special Note on the parameter <code>ssl.ca-file</code></p>
+<p>The documentation states purpose as <em>"path to the CA file for support of chained certificates"</em>. That statement doesn't match with the roles show in <a href="#table-roles">table Authenticatee/Authenticator Roles</a>  Probably this sentence was written thinking only of the case Server Authentication, where the server is the Authenticee holding a leaf secret-key &amp; cert, and the client is the Authenticator holding the root CA public cert.</p>
 <p>In that case, and when when there is an intermediate certificate between the Server's held cert and the client's held root CA cert, purely as a matter of convenience the server will hold and pass the intermediate to the client as part of the SSL handshare.  And to make it even more convenient, the server will hold a copy the root which the client should already have a copy of.  It is necessary the client use their own trusted copy of the root CA for final confirmation.</p>
 <p>The intermediate plus root cert is usually bundled together in file named shomething like "blahblah-fullchain.pem", and <code>ssl.ca-file</code> is set to point to that file on the server.</p>
-<p>When there is no intermediate certificate involved, and the client held root CA cert has directly 
-issued the server held key+cert, the server is not required to hold the root CA to pass 
-to the client, Server Authentication can succeed with parameter <code>ssl.ca-file</code> left unset. 
+<p>When there is no intermediate certificate involved, 
+and the client held root CA cert has directly issued the server held key+cert, 
+the server is not required to hold the root CA to pass to the client, 
+Server Authentication can succeed with parameter <code>ssl.ca-file</code> left unset. 
 (Tested by the author.)  </p>
 <p>On the other hand, in the case of Client Side Authentification, the parameter <code>ssl.ca-file</code> must point to a file holding the CA root certificate at the top of the trust chain which has issed the client's leaf certificate. This is a logical necessity.</p>
-<p>The author has only tested these cases:
- - Server Authetication only, with LE 3-level cert.
- - Server Authetication only, with private 2-level cert.
- - Server and Client Side Authentication, both with private 2-level certs, both issued by the same CA.</p>
+<p>The author has only tested these cases:</p>
+<ul>
+<li>Server Authetication only, with LE 3-level cert.</li>
+<li>Server Authetication only, with private 2-level cert.</li>
+<li>Server and Client Side Authentication, both with private 2-level certs, both issued by the same CA.</li>
+</ul>
 <p>Specifically the author hasn't tested other cases where multiple mixed roots and intermediates all must be present in the file pointed to by <code>ssl.ca-file</code>.  However the <em>lighttpd</em> documentation does specifically say it is possible.</p>
-<p></details>
-</details></p>
-<!-- ----------------------------------------------- -->
-
-<!-- ----------------------------------------------- -->
-
-<!-- ----------------------------------------------- -->
-
-<!-- ----------------------------------------------- -->
-
-<!--
- <details open markdown=1>
-<summary>
-</summary>
-</details>
---></div>
-        </div>
-
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script>var base_url = '.';</script>
-        <script data-main="./mkdocs/js/search.js" src="./mkdocs/js/require.js"></script>
-        <script src="./js/base.js"></script><div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
-            </div>
-            <div class="modal-body">
-                <p>
-                    From here you can search these documents. Enter
-                    your search terms below.
-                </p>
-                <form role="form">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-    </div>
 </div>
+<!-- ----------------------------------------------- -->
 
-    </body>
-</html>
+<!-- ----------------------------------------------- -->
+
+<!-- ----------------------------------------------- -->
+
+<!-- ----------------------------------------------- -->
 
 <!--
-MkDocs version : 0.16.3
-Build Date UTC : 2019-03-08 06:58:33
 -->
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+        
+          <a href="privca/" title="Privca" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Privca
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; Craig Hicks 2019
+          </div>
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+  <div class="md-footer-social">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.css">
+    
+      <a href="https://github.com/craigphicks" class="md-footer-social__link fa fa-github"></a>
+    
+  </div>
+
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="assets/javascripts/application.d9aa80ab.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:"."}})</script>
+      
+    
+  </body>
+</html>
