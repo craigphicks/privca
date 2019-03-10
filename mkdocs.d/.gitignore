@@ -4,4 +4,5 @@ hold
 pyenv
 theme-mkdocs-copy
 *.tmp
+.emacs.desktop
 
