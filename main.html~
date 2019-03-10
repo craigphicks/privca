@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+
+{% block disqus %}
+<h2 id=comments>Comments are Welcome<h2>
+{% endblock %}
