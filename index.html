@@ -764,7 +764,7 @@ is a single string with no spaces. It was broken into two lines only to fit in t
 <!-- -------------- ------- ----------------- -->
 
 <h3 id="making-certs">Example of making certs with <code>privca</code><a class="headerlink" href="#making-certs" title="Permanent link">&para;</a></h3>
-<p>Step by step guide to creating the certs with provided tool.</p>
+<p>Step by step guide to creating the certs with <a href="https://gist.github.com/craigphicks/c9dae527b30441730f62c9c9e9dab5a1">this simple script on gist</a>.</p>
 <h4 id="certs-step-1">certs step 1<a class="headerlink" href="#certs-step-1" title="Permanent link">&para;</a></h4>
 <p>On your main workstation, create a directory named <em>Root1</em> which will contain the private CA and all the leaf certificates that private CA issues.<br />
 Then <code>cd</code> to that directory. E.g., <code>/etc/ssl/privca.d/Root1</code></p>
@@ -775,9 +775,23 @@ cd /etc/ssl/privca.d/Root1
 
 <h4 id="certs-step-2">certs step 2<a class="headerlink" href="#certs-step-2" title="Permanent link">&para;</a></h4>
 <p>Copy the <em>privca</em> shell script to that directory, (or place it somewhere in your path).  Make it executable.</p>
+<details markdown=1>
+<summary>
+Click to see `privca` script:
+</summary>
+
+wzxhzdk:1
+
+</details>
+
+<p>or you can download it from <a href="https://gist.github.com/craigphicks/c9dae527b30441730f62c9c9e9dab5a1">gist</a> directly with</p>
 <div class="codehilite"><pre><span></span>wget https://gist.githubusercontent.com/craigphicks/c9dae527b30441730f62c9c9e9dab5a1/raw/dfd43fff631850e6978a6769f82eba76ef6abe60/privca.sh
 mv privca.sh privca
-sudo chmod +x privca
+</pre></div>
+
+
+<p>Make it executable:</p>
+<div class="codehilite"><pre><span></span>sudo chmod +x privca
 </pre></div>
 
 
