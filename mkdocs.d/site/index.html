@@ -48,16 +48,10 @@
     
       <link rel="stylesheet" href="assets/stylesheets/application.982221ab.css">
       
-        <link rel="stylesheet" href="assets/stylesheets/application-palette.224b79ff.css">
-      
-      
-        
-        
-        <meta name="theme-color" content="#3f51b5">
       
     
     
-      <script src="assets/javascripts/modernizr.1f0bcf2b.js"></script>
+      <script src="assets/javascripts/modernizr.01ccdecf.js"></script>
     
     
       
@@ -77,9 +71,7 @@
     
   </head>
   
-    
-    
-    <body dir="ltr" data-md-color-primary="indigo" data-md-color-accent="indigo">
+    <body dir="ltr">
   
     <svg class="md-svg">
       <defs>
@@ -384,6 +376,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#comments" title="Comments are Welcome" class="md-nav__link">
+    Comments are Welcome
+  </a>
+  
+</li>
+      
       
       
       
@@ -603,6 +602,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#comments" title="Comments are Welcome" class="md-nav__link">
+    Comments are Welcome
+  </a>
+  
+</li>
+      
       
       
       
@@ -758,7 +764,7 @@ is a single string with no spaces. It was broken into two lines only to fit in t
 <!-- -------------- ------- ----------------- -->
 
 <h3 id="making-certs">Example of making certs with <code>privca</code><a class="headerlink" href="#making-certs" title="Permanent link">&para;</a></h3>
-<p>Step by step guide to creating the certs with provided tool.</p>
+<p>Step by step guide to creating the certs with <a href="https://gist.github.com/craigphicks/c9dae527b30441730f62c9c9e9dab5a1">this simple script on gist</a>.</p>
 <h4 id="certs-step-1">certs step 1<a class="headerlink" href="#certs-step-1" title="Permanent link">&para;</a></h4>
 <p>On your main workstation, create a directory named <em>Root1</em> which will contain the private CA and all the leaf certificates that private CA issues.<br />
 Then <code>cd</code> to that directory. E.g., <code>/etc/ssl/privca.d/Root1</code></p>
@@ -769,15 +775,29 @@ cd /etc/ssl/privca.d/Root1
 
 <h4 id="certs-step-2">certs step 2<a class="headerlink" href="#certs-step-2" title="Permanent link">&para;</a></h4>
 <p>Copy the <em>privca</em> shell script to that directory, (or place it somewhere in your path).  Make it executable.</p>
+<details markdown=1>
+<summary>
+Click to see `privca` script:
+</summary>
+
+wzxhzdk:1
+
+</details>
+
+<p>or you can download it from <a href="https://gist.github.com/craigphicks/c9dae527b30441730f62c9c9e9dab5a1">gist</a> directly with</p>
 <div class="codehilite"><pre><span></span>wget https://gist.githubusercontent.com/craigphicks/c9dae527b30441730f62c9c9e9dab5a1/raw/dfd43fff631850e6978a6769f82eba76ef6abe60/privca.sh
 mv privca.sh privca
-sudo chmod +x privca
+</pre></div>
+
+
+<p>Make it executable:</p>
+<div class="codehilite"><pre><span></span>sudo chmod +x privca
 </pre></div>
 
 
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>For your reference there is a <a href="privca-man">man page for privca</a>.<br />
+<p>For your reference there is a <a href="privca">man page for privca</a>.<br />
 Although it is not necessary for this example.</p>
 </div>
 <h4 id="certs-step-3">certs step 3<a class="headerlink" href="#certs-step-3" title="Permanent link">&para;</a></h4>
@@ -1125,6 +1145,15 @@ Server Authentication can succeed with parameter <code>ssl.ca-file</code> left u
 </ul>
 <p>Specifically the author hasn't tested other cases where multiple mixed roots and intermediates all must be present in the file pointed to by <code>ssl.ca-file</code>.  However the <em>lighttpd</em> documentation does specifically say it is possible.</p>
 </div>
+<h2 id="comments">Comments are Welcome<a class="headerlink" href="#comments" title="Permanent link">&para;</a></h2>
+<form>
+<div>
+<script data-isso="https://pindertek.net/isso-2/"
+        src="js-isso/embed.dev.js"></script>
+<section id="isso-thread"></section>
+</div>
+</form>
+
 <!-- ----------------------------------------------- -->
 
 <!-- ----------------------------------------------- -->
@@ -1140,10 +1169,21 @@ Server Authentication can succeed with parameter <code>ssl.ca-file</code> left u
                 
               
               
-                
 
 
-              
+<!--
+
+<h2 id=comments>Comments are Welcome<h2>
+
+<form>
+<script data-isso="https://pindertek.net/isso-2/"
+        src="js-isso/embed.dev.js"></script>
+<section id="isso-thread"></section>
+</form>
+
+-->
+    
+
             </article>
           </div>
         </div>
@@ -1201,7 +1241,7 @@ Server Authentication can succeed with parameter <code>ssl.ca-file</code> left u
       
     </div>
     
-      <script src="assets/javascripts/application.d9aa80ab.js"></script>
+      <script src="assets/javascripts/application.7163f72b.js"></script>
       
       <script>app.initialize({version:"1.0.4",url:{base:"."}})</script>
       

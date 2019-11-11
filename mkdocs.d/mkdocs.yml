@@ -46,4 +46,10 @@ markdown_extensions:
       guess_lang: false
   - toc:
       permalink: true
-      
+
+#extra:
+#  disqus: 'craig'
+
+theme:
+  name: 'material'
+  custom_dir: 'custom'

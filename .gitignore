@@ -3,3 +3,5 @@
 /tmp
 /temp
 mkdocs.d.old
+.emacs.desktop
+mkdocs.d/__pycache__

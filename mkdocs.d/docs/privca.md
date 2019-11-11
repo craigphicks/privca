@@ -1,6 +1,6 @@
 <!-- privca-man -->
 
-Step by step usage example is [here](/#making-certs).
+Step by step usage example is [here](../#making-certs).
 
 ## *privca* usage description
 

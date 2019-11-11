@@ -69,8 +69,7 @@ Server             | Client         | Root1.crt                  | Client1.p12
 
 ### Example of making certs with `privca` {: id=making-certs }
 
-Step by step guide to creating the certs with provided tool.
-
+Step by step guide to creating the certs with [this simple script](privca-script).
 
 #### certs step 1
 On your main workstation, create a directory named *Root1* which will contain the private CA and all the leaf certificates that private CA issues.  
@@ -82,14 +81,21 @@ cd /etc/ssl/privca.d/Root1
 ```
 
 #### certs step 2
-Copy the *privca* shell script to that directory, (or place it somewhere in your path).  Make it executable.
+Copy the *privca* shell script to that directory, (or place it somewhere in your path). 
+
+It is available on [this page](privca-script), or you can download it from [gist](https://gist.github.com/craigphicks/c9dae527b30441730f62c9c9e9dab5a1) directly with
+
 ```
 wget https://gist.githubusercontent.com/craigphicks/c9dae527b30441730f62c9c9e9dab5a1/raw/dfd43fff631850e6978a6769f82eba76ef6abe60/privca.sh
 mv privca.sh privca
+```
+
+Make it executable:
+```
 sudo chmod +x privca
 ```
 !!! note  
-    For your reference there is a [man page for privca](privca-man).  
+    For your reference there is a [man page for privca](privca).  
 	Although it is not necessary for this example.
 
 
@@ -409,6 +415,15 @@ auth.require = ( "" =>
 	Specifically the author hasn't tested other cases where multiple mixed roots and intermediates all must be present in the file pointed to by `ssl.ca-file`.  However the *lighttpd* documentation does specifically say it is possible.
 
 
+## Comments are Welcome {: id=comments}
+
+<form>
+<div>
+<script data-isso="https://pindertek.net/isso-2/"
+        src="js-isso/embed.dev.js"></script>
+<section id="isso-thread"></section>
+</div>
+</form>
 
 
 
